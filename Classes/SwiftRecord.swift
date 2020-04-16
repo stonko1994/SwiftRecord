@@ -14,15 +14,15 @@ import UIKit
 
 open class SwiftRecord {
     
-    open static var generateRelationships = false
+    public static var generateRelationships = false
     
-    open static func setUpEntities(_ entities: [String:NSManagedObject.Type]) {
+    public static func setUpEntities(_ entities: [String:NSManagedObject.Type]) {
         nameToEntities = entities
     }
     
     fileprivate static var nameToEntities: [String:NSManagedObject.Type] = [String:NSManagedObject.Type]()
     
-    open let appName = Bundle.main.infoDictionary!["CFBundleName"] as! String
+    public let appName = Bundle.main.infoDictionary!["CFBundleName"] as! String
     
     open var databaseName: String {
         get {
@@ -168,7 +168,7 @@ open class SwiftRecord {
     }
     fileprivate init() {
         #if os(iOS)
-        NotificationCenter.default.addObserver(self, selector: #selector(SwiftRecord.applicationWillTerminate), name: NSNotification.Name.UIApplicationWillTerminate, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SwiftRecord.applicationWillTerminate), name: UIApplication.willTerminateNotification, object: nil)
         #endif
     }
     @objc open func applicationWillTerminate() {
@@ -178,11 +178,11 @@ open class SwiftRecord {
     #endif
     }
     // singleton
-    open static let sharedRecord = SwiftRecord()
+    public static let sharedRecord = SwiftRecord()
 }
 
 public extension NSManagedObjectContext {
-    public static var defaultContext: NSManagedObjectContext {
+    static var defaultContext: NSManagedObjectContext {
         return SwiftRecord.sharedRecord.managedObjectContext
     }
 }
@@ -427,13 +427,13 @@ extension NSManagedObject {
         var name = NSStringFromClass(self)
         if name.range(of: ".") != nil {
             
-            let comp = name.characters.split {$0 == "."}.map { String($0) }
+            let comp = name.split {$0 == "."}.map { String($0) }
             if comp.count > 1 {
                 name = comp.last!
             }
         }
         if name.range(of: "_") != nil {
-            var comp = name.characters.split {$0 == "_"}.map { String($0) }
+            var comp = name.split {$0 == "_"}.map { String($0) }
             var last: String = ""
             var remove = -1
             for (i,s) in comp.reversed().enumerated() {
@@ -515,7 +515,7 @@ extension NSManagedObject {
     fileprivate static func sortDescriptor(_ string: String) -> NSSortDescriptor {
 
         var key = string
-        let components = string.characters.split {$0 == " "}.map { String($0) }
+        let components = string.split {$0 == " "}.map { String($0) }
         var isAscending = true
         if (components.count > 1) {
             key = components[0]
@@ -529,7 +529,7 @@ extension NSManagedObject {
             return nil
         }
 
-        let components = s.characters.split {$0 == ","}.map { String($0) }
+        let components = s.split {$0 == ","}.map { String($0) }
         var ds = [NSSortDescriptor]()
         for sub in components {
             ds.append(self.sortDescriptor(sub))
@@ -869,7 +869,7 @@ private extension String {
         let spaced = self.replacingOccurrences(of: "_", with: " ")
         let capitalized = spaced.capitalized
         let spaceless = capitalized.replacingOccurrences(of: " ", with: "")
-        return spaceless.replacingCharacters(in: (spaceless.startIndex ..< spaceless.characters.index(after: spaceless.startIndex)), with: "\(spaceless[spaceless.startIndex])".lowercased())
+        return spaceless.replacingCharacters(in: (spaceless.startIndex ..< spaceless.index(after: spaceless.startIndex)), with: "\(spaceless[spaceless.startIndex])".lowercased())
     }
 }
 
@@ -879,7 +879,7 @@ extension NSObject {
         // get the project name
         if  let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String {
             // generate the full name of your class (take a look into your "YourProject-swift.h" file)
-            let classStringName = "_TtC\(appName.utf16.count)\(appName)\(className.characters.count)\(className)"
+            let classStringName = "_TtC\(appName.utf16.count)\(appName)\(className.count)\(className)"
             // return the class!
             
             return NSClassFromString(classStringName)
