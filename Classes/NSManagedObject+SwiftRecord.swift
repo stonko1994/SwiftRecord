@@ -162,7 +162,7 @@ extension ApplicationRecord {
         return o
     }
 
-    @nonobjc public static func create(properties: [String: Any]) -> ApplicationRecord {
+    @nonobjc public static func create(_ properties: [String: Any]) -> ApplicationRecord {
         return self.create(properties, context: NSManagedObjectContext.defaultContext)
     }
 
