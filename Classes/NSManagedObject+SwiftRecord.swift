@@ -215,6 +215,7 @@ extension ApplicationRecord {
         }
     }
 
+    @discardableResult
     open func save() -> Bool {
         return self.saveTheContext()
     }
