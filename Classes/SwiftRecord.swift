@@ -136,15 +136,26 @@ open class SwiftRecord {
     }
     
     open var sqliteStoreURL: URL {
-        #if os(iOS)
-            let dir = self.applicationDocumentsDirectory()
-        #else
-            let dir = self.applicationSupportDirectory()
-            self.createApplicationSupportDirIfNeeded(dir)
-        #endif
-        return dir.appendingPathComponent(self.databaseName)
-        
+        get {
+            if let url = _sqliteStoreURL {
+                return url
+            } else {
+                #if os(iOS)
+                    let dir = self.applicationDocumentsDirectory()
+                #else
+                    let dir = self.applicationSupportDirectory()
+                    self.createApplicationSupportDirIfNeeded(dir)
+                #endif
+                let url = dir.appendingPathComponent(self.databaseName)
+                _sqliteStoreURL = url
+                return url
+            }
+        }
+        set {
+            _sqliteStoreURL = newValue
+        }
     }
+    private var _sqliteStoreURL: URL?
     
     fileprivate func persistentStoreCoordinator(_ storeType: String, storeURL: URL?) -> NSPersistentStoreCoordinator {
         let c = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
