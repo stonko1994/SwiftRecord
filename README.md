@@ -167,6 +167,14 @@ SwiftRecord.sharedRecord.modelName = "MyModelName"
 SwiftRecord.sharedRecord.databaseName = "custom_database_name"
 ```
 
+#### Custom Store location
+If you want to store the data on a custom location you can set it
+```swift
+SwiftRecord.sharedRecord.sqliteStoreURL = URL()
+```
+
+_This e.g. enables AppGroup support to share the store_
+
 ### Mapping
 
 The most of the time, your JSON web service returns keys like `first_name`, `last_name`, etc. <br/>
